@@ -32,7 +32,7 @@ A pílula que aparece enquanto você usa, em cada momento:
 
 E a janela de ajustes, que guia a configuração na primeira abertura:
 
-<p align="center"><img src="images/tela-inicio.png" alt="Tela inicial do noType com tudo pronto" width="58%"></p>
+<p align="center"><img src="images/tela-inicio.png" alt="Tela inicial do noType com o passo a passo de configuração" width="58%"></p>
 
 <details>
 <summary>Mais telas</summary>
@@ -54,6 +54,7 @@ E a janela de ajustes, que guia a configuração na primeira abertura:
 | **Tradução** | Fale em um idioma, o texto sai em outro (12 idiomas), ligado e desligado pela barra de menus. |
 | **Comandos por voz** | Tecla + Espaço: "abre o Safari", "pesquisa receita de bolo", "próxima música", "cria uma nota…". |
 | **Editar por voz** | Selecione um texto, Shift + tecla, diga "deixa mais formal". |
+| **Transcrever áudio e vídeo** | Solte um MP3 ou cole um link do YouTube: o noType transcreve no seu Mac, sem limite de duração, e copia em JSON compacto para você colar na sua IA (cortes, resumos, posts). |
 | **Qualquer tecla** | Fn, F13 a F19, Option, Command ou Control da direita. Serve para teclado externo. |
 | **Atualiza sozinho** | Avisa quando sai uma versão nova e gratuita, e atualiza com um clique. |
 
@@ -62,7 +63,7 @@ E a janela de ajustes, que guia a configuração na primeira abertura:
 1. Baixe o **`noType-x.y.z.dmg`** na [página de versões](https://github.com/odaniribeiro/notype/releases/latest).
 2. Abra o arquivo e **arraste o noType para Aplicativos**.
 3. Abra o noType. **Na primeira vez**, o macOS pode avisar que não conhece o desenvolvedor. Clique com o **botão direito** no app › **Abrir** › **Abrir**. Só é preciso uma vez.
-4. Siga o passo a passo que aparece na tela: duas permissões do macOS (Acessibilidade e Microfone) e o resto o app faz sozinho.
+4. O noType prepara tudo sozinho (motor e modelo de voz, ajuste da tecla Fn e a IA que já estiver no seu Mac). Você só libera duas permissões do macOS (Acessibilidade e Microfone) e escolhe como a IA vai funcionar, se ele ainda não tiver achado uma.
 
 Se o macOS insistir em bloquear, rode no Terminal:
 
