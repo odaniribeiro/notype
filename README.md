@@ -30,7 +30,7 @@ A pílula que aparece enquanto você usa, em cada momento:
 
 <p align="center"><img src="images/pilula.png" alt="A pílula do noType: gravando, transcrevendo, comando por voz e tradução" width="85%"></p>
 
-E a janela de ajustes, que guia a configuração na primeira abertura:
+E a janela do app, no visual da família: trilho de ícones, cartões foscos, títulos em pontos e a **Paçoca**, a gata mascote, que pisca e acompanha o mouse. Tem tema escuro e claro (alternador no trilho). Na primeira abertura ela mostra só o que falta:
 
 <p align="center"><img src="images/tela-inicio.png" alt="Tela inicial do noType com o passo a passo de configuração" width="58%"></p>
 
@@ -57,6 +57,15 @@ E a janela de ajustes, que guia a configuração na primeira abertura:
 | **Transcrever áudio e vídeo** | Solte um MP3 ou cole um link do YouTube: o noType transcreve no seu Mac, sem limite de duração, e copia em JSON compacto para você colar na sua IA (cortes, resumos, posts). |
 | **Qualquer tecla** | Fn, F13 a F19, Option, Command ou Control da direita. Serve para teclado externo. |
 | **Atualiza sozinho** | Avisa quando sai uma versão nova e gratuita, e atualiza com um clique. |
+
+## Transcrever áudio e vídeo
+
+Na aba **Transcrever** você solta um arquivo (MP3, M4A, WAV, MP4, MOV) ou cola um link (YouTube e outros sites) e o noType transcreve no seu Mac, **sem limite de duração**. O idioma é detectado por vários pontos do áudio, e dá para escolher à mão. O resultado sai com os tempos e você copia como:
+
+- **JSON compacto para IA**, no formato `[início_em_segundos, "texto"]`, o mais curto possível para colar numa IA e pedir cortes, resumos ou posts;
+- texto com tempos, só o texto, ou salva em `.json`, `.txt` e legenda `.srt`.
+
+As transcrições ficam salvas em **Documentos/noType/Transcricoes**. Na primeira vez com link, o app baixa sozinho um componente que lê os sites (cerca de 37 MB). Use só conteúdo que você tem o direito de usar.
 
 ## Como instalar
 
@@ -89,14 +98,14 @@ xattr -dr com.apple.quarantine /Applications/noType.app
 
 - **O áudio nunca sai do seu Mac.** A transcrição é feita localmente.
 - **Só o texto** do que você falou vai para a IA que você escolheu. Com a IA local, nada sai do computador.
-- Não há conta, telemetria nem servidor do noType. A única consulta de rede do app, além da IA que você escolher, é **ver se há uma versão nova** nesta página (só uma leitura; nada seu é enviado). Dá para desligar em *Avançado › Atualizações*.
+- Não há conta, telemetria nem servidor do noType. Além da IA que você escolher, o app usa a rede só para: **ver se há uma versão nova** nesta página (só uma leitura; nada seu é enviado; dá para desligar em *Avançado › Atualizações*), **baixar o modelo de voz** uma vez, e **baixar o áudio de um link** quando você pedir em *Transcrever*.
 - Chaves de API, se você usar, ficam no **Keychain** do macOS.
 - Seu histórico e o perfil de estilo ficam em **Documentos/noType**. Você pode ler, editar ou apagar tudo em *Ajustes › Estilo e memória*.
 - Comandos por voz executam só uma **lista fixa de ações seguras**: nunca apagam arquivos, enviam mensagens nem rodam comandos livres.
 
 ## Atualizações
 
-O noType avisa sozinho quando sai uma versão nova e **gratuita**: uma notificação do macOS, um aviso no topo da janela e uma bolinha laranja no ícone da barra de menus. Com um clique em **Atualizar agora** ele baixa, confere a integridade, troca o app e reabre. Nada acontece sem o seu clique.
+O noType avisa sozinho quando sai uma versão nova e **gratuita**: uma notificação do macOS, um aviso no topo da janela e uma bolinha no ícone da barra de menus. Com um clique em **Atualizar agora** ele baixa, confere a integridade, troca o app e reabre. Nada acontece sem o seu clique.
 
 > Como as versões não têm a assinatura paga da Apple, depois de atualizar o macOS pode pedir de novo a permissão de Acessibilidade. O assistente de início mostra o botão **Ativar**.
 
@@ -104,6 +113,7 @@ O noType avisa sozinho quando sai uma versão nova e **gratuita**: uma notifica�
 
 - **Só Macs com chip Apple.** Mac com processador Intel não é compatível.
 - **Não está na Mac App Store**: o app precisa de Acessibilidade e de atalho global, o que a App Store não permite.
+- A aba **Transcrever** lê MP3, M4A, WAV, MP4 e MOV. Formatos como ogg, opus e webm só funcionam se você tiver o `ffmpeg` instalado. Alguns links (vídeos privados ou que pedem login) não podem ser baixados.
 - O modo "IA pela assinatura" leva alguns segundos por ditado. A IA local ou uma chave de API costumam ser mais rápidas.
 - Volume por voz só funciona em saídas de áudio com controle por software (não em HDMI e alguns dispositivos).
 
