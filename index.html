@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>noType — ditado por voz para Mac que escreve por você</title>
+<meta name="description" content="Segure uma tecla, fale, solte. O texto aparece no app em que você está, já limpo, em parágrafos e do seu jeito. Grátis e 100% no seu Mac.">
+<meta property="og:title" content="noType">
+<meta property="og:description" content="Ditado por voz para Mac que escreve por você. Grátis e 100% no seu Mac.">
+<meta property="og:image" content="https://odaniribeiro.github.io/notype/images/thumbs/notype-ambar-desktop.jpg">
+<link rel="icon" href="images/logo.png">
+<style>
+:root {
+  --accent: #f6b93b; --tile: #f6b93b;
+  --card: #19191b; --ink: #edeae5; --dim: #8b8985; --tone: 255,255,255; --raised: #252528;
+  --panel: rgba(0,0,0,.16); --shadow: rgba(0,0,0,.3);
+  --bg: radial-gradient(900px 700px at 0 0, rgba(240,176,122,.5), transparent 70%),
+        linear-gradient(135deg, #b9805a, #86766c 34%, #4b4542 68%, #2a2726);
+}
+:root[data-theme="light"] {
+  --card: #fbf9f6; --ink: #1b1b1d; --dim: #7a756f; --tone: 0,0,0; --raised: #ece8e2;
+  --panel: rgba(255,255,255,.3); --shadow: rgba(0,0,0,.13);
+  --bg: radial-gradient(900px 700px at 0 0, rgba(255,179,122,.55), transparent 70%),
+        linear-gradient(135deg, #f1cba9, #e9dacd 34%, #ddd7d2 68%, #cdc8c4);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--ink); background: var(--bg) fixed; min-height: 100vh;
+  font: 14px/1.6 ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 16px; }
+.panel { background: var(--panel); border: 1px solid rgba(var(--tone), .07); border-radius: 30px; padding: 22px; }
+
+/* Rail-style top bar */
+nav { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 26px; padding: 8px 10px 8px 8px;
+      box-shadow: 0 6px 20px var(--shadow); position: sticky; top: 12px; z-index: 5; }
+nav .mini { width: 38px; height: 38px; flex: none; }
+nav .brand { margin-right: auto; display: flex; }
+nav a.link { text-decoration: none; text-transform: uppercase; letter-spacing: .08em; font-size: 11px; color: var(--dim); padding: 8px 6px; }
+nav a.link:hover { color: var(--ink); }
+.round { width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(var(--tone), .08); color: var(--ink); cursor: pointer; font-size: 15px; flex: none; }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; text-transform: uppercase; letter-spacing: .08em;
+       font-weight: 700; font-size: 12px; padding: 11px 20px; border-radius: 999px; white-space: nowrap; transition: transform .12s, opacity .12s; }
+.btn:active { transform: scale(.97); }
+.btn.glow { background: var(--accent); color: #000; }
+.btn.glow:hover { opacity: .88; }
+.btn.ghost { background: var(--raised); color: var(--ink); border: 1px solid rgba(var(--tone), .16); font-weight: 500; }
+.btn.small { padding: 7px 13px; font-size: 10.5px; }
+
+.card { background: var(--card); border: 1px solid rgba(var(--tone), .05); border-radius: 22px; padding: 20px; box-shadow: 0 6px 20px var(--shadow); }
+.label { display: flex; gap: 8px; font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+.label b { color: var(--dim); font-weight: 500; }
+.dim { color: var(--dim); }
+.dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 8px; vertical-align: middle; }
+svg.dots { display: block; max-width: 100%; height: auto; fill: var(--ink); }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: center; padding: 34px 12px 26px; }
+.stage { position: relative; width: 250px; height: 250px; display: grid; place-items: center; }
+.stage .ring { position: absolute; inset: 0; }
+.cat { width: 172px; height: 172px; cursor: pointer; filter: drop-shadow(0 10px 18px var(--shadow)); transition: transform .25s cubic-bezier(.3,1.6,.5,1); }
+.cat.pop { transform: scale(1.12); }
+.cat .lid { transition: transform .09s ease-in; transform-box: view-box; transform-origin: 50px 72px; }
+.cat.blink .lid { transform: scaleY(.04); }
+.cat .ear { transition: transform .12s; transform-box: view-box; transform-origin: 31px 44px; }
+.cat .ear.r { transform-origin: 69px 44px; }
+.cat.twitch .ear.l { transform: rotate(-11deg); }
+.cat.twitch .ear.r { transform: rotate(11deg); }
+.mouth { opacity: 0; transition: opacity .1s; } /* unscoped: the small copy in the bar must hide it too */
+.cat.meow .mouth { opacity: 1; }
+.hero h1 { margin: 0 0 14px; }
+.hero p { margin: 0 0 20px; max-width: 520px; font-size: 14px; }
+.hero .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.hero small { display: block; margin-top: 14px; color: var(--dim); font-size: 11px; }
+
+section { margin-top: 26px; }
+section > h2 { margin: 0 0 6px; }
+section > .sub { margin: 0 0 16px; font-size: 12px; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.card h3 { margin: 0 0 6px; font-size: 14px; }
+.card p { margin: 0; font-size: 12px; color: var(--dim); }
+.bar { height: 6px; margin-top: 14px; background: repeating-linear-gradient(90deg, rgba(var(--tone), .1) 0 2px, transparent 2px 4px); position: relative; }
+.bar i { position: absolute; inset: 0 auto 0 0; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px); }
+.bar i.hot { background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px); }
+
+.shots { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+.shots .card { padding: 10px; }
+.shots .card:first-child { grid-column: 1 / -1; }
+.shots img, .wall img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.shots figcaption, .wall figcaption { font-size: 11px; color: var(--dim); padding: 10px 8px 2px; text-transform: uppercase; letter-spacing: .1em; }
+figure { margin: 0; }
+
+.walls { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.wall { padding: 10px; }
+.wall .pair { display: grid; grid-template-columns: 1fr 26%; gap: 8px; align-items: stretch; }
+.wall .pair img { height: 100%; object-fit: cover; aspect-ratio: auto; }
+.wall .pair img:first-child { aspect-ratio: 16 / 9; }
+.wall .foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 6px 4px; }
+.wall .foot span { margin-right: auto; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: s; }
+ol.steps li { counter-increment: s; position: relative; padding-left: 40px; font-size: 13px; }
+ol.steps li::before { content: counter(s, decimal-leading-zero); color: var(--accent); font-weight: 700; position: absolute; left: 0; }
+.two { display: grid; gap: 16px; grid-template-columns: 1.4fr 1fr; }
+footer { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 22px 6px 8px; font-size: 11px; color: var(--dim); }
+footer span { margin-right: auto; }
+
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; gap: 18px; justify-items: start; padding-top: 22px; }
+  .stage { width: 200px; height: 200px; } .cat { width: 138px; height: 138px; }
+  nav a.link { display: none; }
+  .shots, .two { grid-template-columns: 1fr; }
+  .panel { padding: 14px; border-radius: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <svg class="mini" viewBox="0 0 100 100" aria-hidden="true"><use href="#cat-art"/></svg>
+    <span class="brand"><svg class="dots" data-text="noType" data-size="13" role="img" aria-label="noType"></svg></span>
+    <a class="link" href="#recursos">Recursos</a>
+    <a class="link" href="#telas">Telas</a>
+    <a class="link" href="#wallpapers">Wallpapers</a>
+    <a class="link" href="#instalar">Instalar</a>
+    <button class="round" id="theme" title="Trocar tema" aria-label="Trocar tema">☾</button>
+    <a class="btn glow small" data-download href="https://github.com/odaniribeiro/notype/releases/latest">Baixar</a>
+  </nav>
+
+  <main class="panel" style="margin-top:14px">
+    <div class="hero">
+      <div class="stage">
+        <svg class="ring" viewBox="0 0 250 250" aria-hidden="true" id="ring"></svg>
+        <svg class="cat" id="cat" viewBox="0 0 100 100" role="img" aria-label="A Paçoca, gata mascote do noType. Clique para ela miar.">
+          <defs>
+            <clipPath id="tile"><rect width="100" height="100" rx="22.5"/></clipPath>
+            <clipPath id="eyeL"><path d="M18.5 50 L46.5 58.5 C45 75 19 76 18.5 50Z"/></clipPath>
+            <clipPath id="eyeR"><path d="M81.5 50 L53.5 58.5 C55 75 81 76 81.5 50Z"/></clipPath>
+          </defs>
+            <g id="cat-art" clip-path="url(#tile)">
+              <rect width="100" height="100" fill="#f6b93b"/>
+              <ellipse cx="50" cy="109" rx="36" ry="25" fill="#8c8c93"/>
+              <g class="ear l"><path d="M17 50 L21 16.5 L44.5 32.5Z" fill="#8c8c93" stroke="#8c8c93" stroke-width="5" stroke-linejoin="round"/><path d="M22.5 43 L23.5 22.5 L39 33.5Z" fill="#eba5ae"/></g>
+              <g class="ear r"><path d="M83 50 L79 16.5 L55.5 32.5Z" fill="#8c8c93" stroke="#8c8c93" stroke-width="5" stroke-linejoin="round"/><path d="M77.5 43 L76.5 22.5 L61 33.5Z" fill="#eba5ae"/></g>
+              <ellipse cx="50" cy="59" rx="39.5" ry="32" fill="#8c8c93"/>
+              <clipPath id="headClip"><ellipse cx="50" cy="59" rx="39.5" ry="32"/></clipPath>
+              <path clip-path="url(#headClip)" d="M50 27.5 L50 40 M42 28.5 L44 38.5 M58 28.5 L56 38.5 M10 57.5 L20 59 M10.5 64.5 L20.5 64.5 M90 57.5 L80 59 M89.5 64.5 L79.5 64.5" stroke="#55555c" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path d="M25 70 L3.5 65.5 M24.5 74.5 L2.5 75 M25.5 79 L5 84.5 M75 70 L96.5 65.5 M75.5 74.5 L97.5 75 M74.5 79 L95 84.5" stroke="#f4f4f4" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+              <g class="lid">
+                <path d="M18.5 50 L46.5 58.5 C45 75 19 76 18.5 50Z" fill="#e9f7a8"/>
+                <path d="M81.5 50 L53.5 58.5 C55 75 81 76 81.5 50Z" fill="#e9f7a8"/>
+                <g clip-path="url(#eyeL)"><ellipse class="pupil" cx="34.5" cy="63.5" rx="2.4" ry="7.5" fill="#141416"/></g>
+                <g clip-path="url(#eyeR)"><ellipse class="pupil" cx="65.5" cy="63.5" rx="2.4" ry="7.5" fill="#141416"/></g>
+              </g>
+              <path d="M47.5 70.5 L52.5 70.5 L50 73.2Z" fill="#e58a96" stroke="#e58a96" stroke-width="1.2" stroke-linejoin="round"/>
+              <g class="mouth"><path d="M39 77.5 L63 76.5 Q52 104 39 77.5Z" fill="#d9335c"/><path d="M45 87 Q51 82 57 86 Q54 91 50.5 91 Q47 91 45 87Z" fill="#ff809e"/></g>
+              <path d="M55.5 76.8 L60 76.6 L58.6 83Z" fill="#fff"/>
+            </g>
+        </svg>
+      </div>
+      <div>
+        <h1><svg class="dots" data-text="noType" data-size="34" role="img" aria-label="noType"></svg></h1>
+        <p><span class="dot"></span>Ditado por voz para Mac que escreve por você. Segure uma tecla, fale, solte: o texto aparece no app em que você está, já limpo, em parágrafos e do seu jeito.</p>
+        <div class="row">
+          <a class="btn glow" data-download href="https://github.com/odaniribeiro/notype/releases/latest">Baixar para macOS</a>
+          <a class="btn ghost" href="#wallpapers">Wallpapers</a>
+        </div>
+        <small id="version">Grátis · macOS 14 ou mais recente · Apple Silicon</small>
+      </div>
+    </div>
+
+    <section id="recursos">
+      <h2><svg class="dots" data-text="Recursos" data-size="22" role="img" aria-label="Recursos"></svg></h2>
+      <p class="sub dim"><span class="dot"></span>Tudo o que o ditado precisa, sem configurar nada</p>
+      <div class="grid" id="features"></div>
+    </section>
+
+    <section id="telas">
+      <h2><svg class="dots" data-text="Telas" data-size="22" role="img" aria-label="Telas"></svg></h2>
+      <p class="sub dim"><span class="dot"></span>Tema escuro e claro, com um clique</p>
+      <div class="shots">
+        <figure class="card"><img src="images/pilula.png" alt="A pílula do noType: gravando, transcrevendo, comando por voz e tradução" width="1640" height="560" loading="lazy"><figcaption>A pílula que aparece enquanto você usa</figcaption></figure>
+        <figure class="card"><img src="images/telas/inicio.jpg" alt="Tela inicial do noType: passo a passo de configuração" width="2000" height="1920" loading="lazy"><figcaption>01 Início · tudo preparado sozinho</figcaption></figure>
+        <figure class="card"><img src="images/telas/ia.jpg" alt="Escolha da IA: Claude, ChatGPT, modelo local ou chave de API" width="2000" height="2360" loading="lazy"><figcaption>03 IA e tradução</figcaption></figure>
+        <figure class="card" style="grid-column:1/-1"><img src="images/telas/ditado.jpg" alt="Atalho, comandos por voz e idioma" width="2000" height="1760" loading="lazy"><figcaption>01 Ditado · atalho e idioma</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="wallpapers">
+      <h2><svg class="dots" data-text="Wallpapers" data-size="22" role="img" aria-label="Wallpapers"></svg></h2>
+      <p class="sub dim"><span class="dot"></span>Cinco papéis de parede com a Paçoca, para computador (5K) e celular</p>
+      <div class="walls" id="walls"></div>
+    </section>
+
+    <section id="instalar">
+      <h2><svg class="dots" data-text="Instalar" data-size="22" role="img" aria-label="Instalar"></svg></h2>
+      <p class="sub dim"><span class="dot"></span>Leva um minuto</p>
+      <div class="two">
+        <div class="card">
+          <div class="label"><b>01</b>Passo a passo</div>
+          <ol class="steps">
+            <li>Baixe o arquivo <b>.dmg</b> pelo botão abaixo.</li>
+            <li>Abra o .dmg e arraste o <b>noType</b> para <b>Aplicativos</b>.</li>
+            <li>Na primeira vez, clique com o botão direito no app e escolha <b>Abrir</b>. O app não é assinado pela Apple, então o macOS pede essa confirmação.</li>
+            <li>O noType prepara tudo sozinho (motor e modelo de voz, ajuste do Fn e a IA que já estiver no seu Mac). Você só libera <b>Acessibilidade</b> e <b>Microfone</b> e escolhe como a IA vai funcionar.</li>
+          </ol>
+          <p style="margin-top:16px"><a class="btn glow" data-download href="https://github.com/odaniribeiro/notype/releases/latest">Baixar para macOS</a></p>
+        </div>
+        <div class="card">
+          <div class="label"><b>02</b>Privacidade</div>
+          <p>O áudio nunca sai do seu Mac: a transcrição é feita aqui. Só o texto vai para a IA que você escolher (com a IA local, nada sai). Não há conta, telemetria nem servidor do noType.</p>
+          <div class="label" style="margin-top:20px"><b>03</b>Atualizações</div>
+          <p>O app avisa quando sai versão nova e se atualiza com um clique, conferindo a integridade do arquivo antes de instalar. Atualizar é sempre grátis.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Criado e desenvolvido por Daniel Ribeiro</span>
+      <a class="btn ghost small" href="https://www.instagram.com/odaniribeiro">@odaniribeiro</a>
+      <a class="btn ghost small" href="https://github.com/odaniribeiro/notype">Página no GitHub</a>
+      <a class="btn ghost small" href="https://github.com/odaniribeiro/notype/releases">Versões</a>
+    </footer>
+  </main>
+</div>
+
+<script>
+// ---- Dot-matrix type: the same 5x7 glyphs the app uses (columns, bit 0 at the top) ----
+const GLYPHS = {"0":[62,81,73,69,62],"1":[0,66,127,64,0],"2":[66,97,81,73,70],"3":[33,65,69,75,49],"4":[24,20,18,127,16],
+"5":[39,69,69,69,57],"6":[60,74,73,73,48],"7":[1,113,9,5,3],"8":[54,73,73,73,54],"9":[6,73,73,41,30],
+A:[126,17,17,17,126],B:[127,73,73,73,54],C:[62,65,65,65,34],D:[127,65,65,34,28],E:[127,73,73,73,65],F:[127,9,9,9,1],
+G:[62,65,73,73,122],H:[127,8,8,8,127],I:[0,65,127,65,0],J:[32,64,65,63,1],K:[127,8,20,34,65],L:[127,64,64,64,64],
+M:[127,2,12,2,127],N:[127,4,8,16,127],O:[62,65,65,65,62],P:[127,9,9,9,6],Q:[62,65,81,33,94],R:[127,9,25,41,70],
+S:[70,73,73,73,49],T:[1,1,127,1,1],U:[63,64,64,64,63],V:[31,32,64,32,31],W:[63,64,56,64,63],X:[99,20,8,20,99],
+Y:[7,8,112,8,7],Z:[97,81,73,69,67],"%":[35,19,8,100,98],".":[0,96,96,0,0],"-":[8,8,8,8,8]};
+for (const svg of document.querySelectorAll("svg.dots")) {
+  const text = svg.dataset.text.normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase();
+  const size = +svg.dataset.size, pitch = size / 7, r = pitch * 0.43;
+  let out = "";
+  [...text].forEach((ch, i) => (GLYPHS[ch] || []).forEach((bits, x) => {
+    for (let y = 0; y < 7; y++) if (bits & (1 << y)) out += `<circle cx="${((i * 6 + x + .5) * pitch).toFixed(2)}" cy="${((y + .5) * pitch).toFixed(2)}" r="${r.toFixed(2)}"/>`;
+  }));
+  const w = (text.length * 6 - 1) * pitch;
+  svg.setAttribute("viewBox", `0 0 ${w} ${size}`); svg.setAttribute("width", w); svg.setAttribute("height", size);
+  svg.innerHTML = out;
+}
+
+// ---- Tick ring around the cat ----
+(() => {
+  const ring = document.getElementById("ring"); let out = "";
+  for (let i = 0; i < 64; i++) {
+    const a = i / 64 * 2 * Math.PI - Math.PI / 2, c = Math.cos(a), s = Math.sin(a);
+    const color = i >= 53 ? "rgba(var(--tone),.13)" : i >= 49 ? "var(--accent)" : "var(--ink)";
+    out += `<line x1="${125 + c * 111}" y1="${125 + s * 111}" x2="${125 + c * 123}" y2="${125 + s * 123}" stroke="${color}" stroke-width="2.4" stroke-linecap="round"/>`;
+  }
+  ring.innerHTML = out;
+})();
+
+// ---- The cat: follows the pointer, blinks, flicks its ears, meows when clicked ----
+(() => {
+  const cat = document.getElementById("cat"), pupils = cat.querySelectorAll(".pupil");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  addEventListener("pointermove", e => {
+    const b = cat.getBoundingClientRect();
+    const dx = Math.max(-1, Math.min(1, (e.clientX - (b.left + b.width / 2)) / 320));
+    const dy = Math.max(-1, Math.min(1, (e.clientY - (b.top + b.height / 2)) / 320));
+    pupils.forEach(p => p.setAttribute("transform", `translate(${(dx * 4.5).toFixed(2)} ${(dy * 2.5).toFixed(2)})`));
+  });
+  const flash = (name, ms) => { cat.classList.add(name); setTimeout(() => cat.classList.remove(name), ms); };
+  const blink = n => { flash("blink", 120); if (n > 1) setTimeout(() => blink(n - 1), 300); };
+  (function idle() {
+    setTimeout(() => {
+      const roll = Math.random();
+      if (!still) roll < .5 ? blink(1) : roll < .72 ? blink(2) : roll < .84 ? blink(3) : flash("twitch", 130);
+      idle();
+    }, 2000 + Math.random() * 2500);
+  })();
+  cat.addEventListener("click", () => { flash("meow", 700); flash("pop", 300); flash("twitch", 130); });
+})();
+
+// ---- Content ----
+const FEATURES = [
+  ["Ditado", "Segure a tecla, fale, solte. Tira \"né\", \"tipo\", repetições e autocorreções, pontua, separa em parágrafos e vira lista quando você enumera.", 92],
+  ["Tom por app", "Reconhece onde você está (chat, e-mail, notas…) e ajusta o registro do texto.", 60],
+  ["Seu estilo", "Aprende como você fala e escreve e usa isso nas próximas falas. O perfil fica numa pasta sua.", 74],
+  ["Tradução", "Fale em um idioma e o texto sai em outro (12 idiomas), ligado e desligado pela barra de menus.", 48],
+  ["Comandos por voz", "Tecla + Espaço: \"abre o Safari\", \"pesquisa receita de bolo\", \"próxima música\", \"cria uma nota…\".", 66],
+  ["Editar por voz", "Selecione um texto, aperte Shift + tecla e diga \"deixa mais formal\".", 38],
+  ["Transcrever áudio e vídeo", "Solte um MP3 ou cole um link: transcreve no seu Mac, sem limite de duração, e copia em JSON compacto para a sua IA.", 88],
+  ["Qualquer tecla", "Fn, F13 a F19, Option, Command ou Control da direita. Serve para teclado externo.", 30],
+];
+document.getElementById("features").innerHTML = FEATURES.map(([name, text, level], i) => `
+  <div class="card"><div class="label"><b>${String(i + 1).padStart(2, "0")}</b>${name}</div>
+  <p>${text}</p><div class="bar" aria-hidden="true"><i class="${level > 85 ? "hot" : ""}" style="width:${level}%"></i></div></div>`).join("");
+
+const WALLS = [["ambar", "Âmbar"], ["noturno", "Noturno"], ["grade", "Grade"], ["brasa", "Brasa"], ["creme", "Creme"]];
+document.getElementById("walls").innerHTML = WALLS.map(([id, name], i) => `
+  <figure class="card wall">
+    <div class="pair">
+      <img src="images/thumbs/notype-${id}-desktop.jpg" alt="Wallpaper ${name}, versão para computador" loading="lazy" width="960" height="540">
+      <img src="images/thumbs/notype-${id}-celular.jpg" alt="Wallpaper ${name}, versão para celular" loading="lazy" width="332" height="720">
+    </div>
+    <div class="foot"><span><b class="dim">${String(i + 1).padStart(2, "0")}</b> ${name}</span>
+      <a class="btn ghost small" href="wallpapers/notype-${id}-desktop.jpg" download>Desktop 5K</a>
+      <a class="btn ghost small" href="wallpapers/notype-${id}-celular.jpg" download>Celular</a></div>
+  </figure>`).join("");
+
+// ---- Theme ----
+(() => {
+  const root = document.documentElement, button = document.getElementById("theme");
+  let saved = null;
+  try { saved = localStorage.getItem("theme"); } catch {}
+  const apply = t => { root.dataset.theme = t; button.textContent = t === "light" ? "☀" : "☾"; };
+  apply(saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
+  button.addEventListener("click", () => {
+    const next = root.dataset.theme === "light" ? "dark" : "light";
+    apply(next);
+    try { localStorage.setItem("theme", next); } catch {}
+  });
+})();
+
+// ---- Point the download buttons straight at the latest installer ----
+fetch("https://api.github.com/repos/odaniribeiro/notype/releases/latest")
+  .then(r => r.ok ? r.json() : null)
+  .then(release => {
+    if (!release) return;
+    const dmg = (release.assets || []).find(a => a.name.toLowerCase().endsWith(".dmg"));
+    if (dmg) document.querySelectorAll("[data-download]").forEach(a => a.href = dmg.browser_download_url);
+    const mb = dmg ? ` · ${(dmg.size / 1048576).toFixed(1).replace(".", ",")} MB` : "";
+    document.getElementById("version").textContent = `Versão ${release.tag_name.replace(/^v/, "")}${mb} · grátis · macOS 14 ou mais recente · Apple Silicon`;
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>

@@ -19,6 +19,8 @@
 <p align="center">
   <a href="https://github.com/odaniribeiro/notype/releases/latest"><b>⬇ Baixar para Mac</b></a>
   &nbsp;·&nbsp; <a href="#como-instalar">Como instalar</a>
+  &nbsp;·&nbsp; <a href="https://odaniribeiro.github.io/notype/">Página do app</a>
+  &nbsp;·&nbsp; <a href="https://odaniribeiro.github.io/notype/#wallpapers">Wallpapers</a>
   &nbsp;·&nbsp; <a href="https://www.vakinha.com.br/6366411">Apoiar o projeto</a>
 </p>
 
