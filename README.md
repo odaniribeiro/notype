@@ -121,7 +121,9 @@ O noType avisa sozinho quando sai uma versão nova e **gratuita**: uma notifica�
 
 ## Problemas e sugestões
 
-Encontrou algo estranho ou tem uma ideia? Abra uma **issue** aqui no GitHub descrevendo o que aconteceu.
+Encontrou algo estranho ou tem uma ideia? **[Reportar problema ou sugerir melhoria](https://github.com/odaniribeiro/notype/issues/new/choose)**. O formulário já pede o que ajuda a resolver, como a versão do app e do macOS.
+
+As issues são públicas: não coloque nelas senhas, chaves de API nem dados pessoais.
 
 ## Apoie o projeto
 

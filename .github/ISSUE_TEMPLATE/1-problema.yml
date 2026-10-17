@@ -1,0 +1,68 @@
+name: "Relatar um problema"
+description: "Algo não funcionou como deveria no noType."
+title: "[Problema] "
+labels: ["bug", "triagem"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por avisar! Quanto mais detalhes, mais rápido dá para resolver.
+        Antes de enviar, veja se já não existe uma issue igual na aba **Issues**.
+        **Não coloque aqui senhas, chaves de API nem dados pessoais:** tudo o que você escrever fica público.
+  - type: textarea
+    id: o-que-aconteceu
+    attributes:
+      label: "O que aconteceu?"
+      description: "Conte o que você viu. Se apareceu alguma mensagem, copie o texto aqui."
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: "Como fazer acontecer de novo"
+      description: "O passo a passo até o problema aparecer."
+      placeholder: |
+        1. Abri um app de texto
+        2. Apertei o atalho do noType e falei ...
+        3. ...
+  - type: textarea
+    id: esperado
+    attributes:
+      label: "O que você esperava que acontecesse?"
+  - type: input
+    id: versao-app
+    attributes:
+      label: "Versão do noType"
+      description: "Aparece em Sobre, dentro do app."
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: versao-macos
+    attributes:
+      label: "Versão do macOS"
+      description: "Menu Apple › Sobre Este Mac."
+      placeholder: "macOS 26.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: ia
+    attributes:
+      label: "Qual IA reescreve o texto?"
+      options:
+        - "Claude pela assinatura"
+        - "ChatGPT pela assinatura"
+        - "IA local grátis"
+        - "Chave de API"
+        - "Nenhuma"
+        - "Não sei"
+  - type: input
+    id: mac
+    attributes:
+      label: "Modelo do Mac"
+      placeholder: "MacBook Air M2"
+  - type: textarea
+    id: anexos
+    attributes:
+      label: "Imagens ou vídeo"
+      description: "Se puder, arraste aqui uma captura de tela ou uma gravação mostrando o problema."
